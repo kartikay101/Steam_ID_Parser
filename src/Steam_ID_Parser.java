@@ -14,14 +14,26 @@ public class Steam_ID_Parser {
 		System.out.println("Enter Steam ID\n");
 		UserID_Raw=sc.nextLine();
 		sc.close();
+		int length=UserID_Raw.length();
 		
+		// if the user copies the url directly , removing the last '/' after the profile
+		if(UserID_Raw.charAt(length-1)=='/'){
+			UserID_Raw=UserID_Raw.substring(0,length-1);
+		}
 		
 		if(isValid(UserID_Raw)){
 		UserID_64 = parseID(UserID_Raw);
 		return UserID_64;
 		}
-		else{	
-			return "-1";
+		else if(UserID_Raw.matches("\\d{17}")){
+			return UserID_Raw;
+		}
+		else if(UserID_Raw.matches("\\w+")){
+			UserID_64 = parseID("http://www.steamcommunity.com/id/"+UserID_Raw);
+			return UserID_64;
+		}
+		else{
+			return "Mismatched ID";
 		}
 	}
 	
