@@ -20,55 +20,33 @@ public class Steam_ID_Parser {
 		if(UserID_Raw.charAt(length-1)=='/'){
 			UserID_Raw=UserID_Raw.substring(0,length-1);
 		}
+		String result=isValid(UserID_Raw);
+		if(result.equals("Mismatched ID")){
+			return "Invalid Input";
+		}
+		else{
+			return getID_64(result); 
+		}
 		
-		if(isValid(UserID_Raw)){
-		UserID_64 = parseID(UserID_Raw);
-		return UserID_64;
-		}
-		else if(UserID_Raw.matches("\\d{17}")){
-			return UserID_Raw;
-		}
-		else if(UserID_Raw.matches("\\w+")){
-			UserID_64 = parseID("http://www.steamcommunity.com/id/"+UserID_Raw);
+	}
+	
+	private static String isValid(String UserID_Raw){
+		
+		//System.out.print(UserID_Raw);
+		if(UserID_Raw.matches("(?:https?:\\/\\/)?(www.)?steamcommunity\\.com\\/(?:profiles|id)\\/\\w+")){
+			UserID_64=UserID_Raw;
 			return UserID_64;
 		}
-		else{
-			return "Mismatched ID";
+		else if(UserID_Raw.matches("\\d{17}")){
+				return "http://steamcommunity.com/profiles/"+UserID_Raw;
 		}
-	}
-	
-	private static boolean isValid(String UserID_Raw){
-		
-		Pattern valid = Pattern.compile("(?:https?:\\/\\/)?steamcommunity\\.com\\/(?:profiles|id)\\/\\w+");
-		Matcher match = valid.matcher(UserID_Raw);
-		
-		return match.matches();
-	}
-	private static String parseID(String UID_Raw){
-	
-		
-		Pattern steamID = Pattern.compile("\\d{17}");
-		Matcher UID = steamID.matcher(UID_Raw);
-		
-		
-		String extracted_ID="";
-		if(UID.find()){
-		    extracted_ID=UID.group(0);
+		else if(UserID_Raw.matches("\\w+")){
+				UserID_64 ="http://www.steamcommunity.com/id/"+UserID_Raw;
+				return UserID_64;
 		}
 		else{
-		
-// // wrote this code, don't feel like deleting it
-//			Pattern custURL = Pattern.compile("\\w{1,}$");
-//			Matcher URL = custURL.matcher(UID_Raw);
-//			
-//			if(URL.find()){
-//				custom_URL=URL.group();
-//			}
-			
-			extracted_ID= getID_64(UID_Raw);
+				return "Mismatched ID";
 		}
-		return extracted_ID;
-		
 	}
 	private static String getID_64(String UserID_Raw){
 		
@@ -110,19 +88,21 @@ public class Steam_ID_Parser {
 		}
 		catch (java.util.NoSuchElementException e){
 			// If the entered id is not valid, the Scanner class throws this exception
-			System.out.println("The entered steam ID is invalid ");
-			System.exit(0);
+			Pattern steamID = Pattern.compile("profiles\\/\\d{17}");
+			Matcher UID = steamID.matcher(UserID_Raw);
+			if(UID.find()){
+				int len=UserID_Raw.length();
+				return getID_64("http://steamcommunity.com/id/"+UserID_Raw.substring(len-18,len));
+				
+			}
+			return "Invalid Input";
 		}
 		catch (Exception e){
 			System.out.println("Exception : "+e);
-			System.exit(0);
-			
+			System.exit(0);	
 		}
-		
-		
 		return steamID_64;
 	}
-	
 	public static void main(String args[]){
 		
 		//Steam_ID_Receiver s = new Steam_ID_Receiver();
