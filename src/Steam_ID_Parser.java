@@ -32,7 +32,6 @@ public class Steam_ID_Parser {
 	
 	private static String isValid(String UserID_Raw){
 		
-		//System.out.print(UserID_Raw);
 		if(UserID_Raw.matches("(?:https?:\\/\\/)?(www.)?steamcommunity\\.com\\/(?:profiles|id)\\/\\w+")){
 			UserID_64=UserID_Raw;
 			return UserID_64;
@@ -76,7 +75,6 @@ public class Steam_ID_Parser {
 			int responseCode = sendReq.getResponseCode();
 			
 			
-			//System.out.print(responseCode+sendReq.getHeaderField("Location"));
 			if(responseCode == HttpURLConnection.HTTP_OK){
 				Scanner sc=new Scanner(sendReq.getInputStream());
 				steamID_64=sc.nextLine()+"";
